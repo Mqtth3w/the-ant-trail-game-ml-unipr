@@ -24,7 +24,11 @@ def ant_rec(N, m, filename, seed):
         score += 1
     grid[x][y] -= 1
     while moves < 2*N and score > 0 and score < N:
-        view = grid[max(0, x - m):min(N, x + m + 1), max(0, y - m):min(N, y + m + 1)]
+        x_min, x_max = max(0, x - m), min(N, x + m + 1)
+        y_min, y_max = max(0, y - m), min(N, y + m + 1)
+        view = grid[x_min:x_max, y_min:y_max]
+        ones_positions = np.argwhere(view == 1)
+        
         
         
         
