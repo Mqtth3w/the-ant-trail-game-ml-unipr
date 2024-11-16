@@ -33,27 +33,28 @@ def ant_rec(N, m, filename, seed):
         x_min, x_max = x - m, x + m + 1
         y_min, y_max = y - m, y + m + 1
         view = grid[x_min:x_max, y_min:y_max]
+        line = ",".join(map(str, view.flatten()))
         ones_positions = np.argwhere(view == 1)
         ones_positions = [(x_min + pos[0], y_min + pos[1]) for pos in ones_positions]
         if ones_positions:
-            first_near = [(x-1, y), (x, y-1), (x, y+1), (x+1, y)]
+            first_near = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
             first_ones = [pos for pos in ones_positions if pos in first_near]
             if first_ones: # if-elif-else all cases m=1
                 x_mov, y_mov = random.choice(first_ones)
                 if (x_mov, y_mov) == (x-1, y):
                     x -= 1
                     move = "up"
+                elif (x_mov, y_mov) == (x+1, y):
+                    x += 1
+                    move = "down"
                 elif (x_mov, y_mov) == (x, y-1):
                     y -= 1
                     move = "left"
                 elif (x_mov, y_mov) == (x, y+1):
                     y += 1
                     move = "right"
-                elif (x_mov, y_mov) == (x+1, y):
-                    x += 1
-                    move = "down"
             else:
-                first_corsers = [(x-1, y-1), (x+1, y+1), (x-1, y-1), (x-1, y+1)]
+                first_corsers = [(x-1, y-1), (x-1, y+1), (x+1, y-1), (x+1, y+1)]
                 corner_ones = [pos for pos in ones_positions if pos in first_corsers]
                 if corner_ones:
                     x_corner, y_corner = random.choice(corner_ones)
@@ -69,26 +70,26 @@ def ant_rec(N, m, filename, seed):
                     best_move = max(neighbors, key=lambda pos: grid[pos[0]][pos[1]])
                     x, y, move = best_move[0], best_move[1], best_move[2]
                 else: # if-elif-else all cases m=2
-                    second_near = [(x-2, y), (x, y-2), (x, y+2), (x+2, y)]
+                    second_near = [(x-2, y), (x+2, y), (x, y-2), (x, y+2)]
                     second_ones = [pos for pos in ones_positions if pos in second_near]
                     if second_ones:
                         x_mov, y_mov = random.choice(second_ones)
                         if (x_mov, y_mov) == (x-2, y):
                             x -= 1
                             move = "up"
+                        elif (x_mov, y_mov) == (x+2, y):
+                            x += 1
+                            move = "down"
                         elif (x_mov, y_mov) == (x, y-2):
                             y -= 1
                             move = "left"
                         elif (x_mov, y_mov) == (x, y+2):
                             y += 1
                             move = "right"
-                        elif (x_mov, y_mov) == (x+2, y):
-                            x += 1
-                            move = "down"
                     else:
-                        second_corsers = [(x-2, y-2), (x+2, y+2), (x-2, y-2), (x-2, y+2),
-                                          (x-2, y-1), (x-1, y-2), (x-2, y+1), (x-1, y+2),
-                                          (x+2, y-1), (x+1, y-2), (x+2, y+1), (x+1, y+2)]
+                        second_corsers = [(x-2, y-2), (x-2, y+2), (x+2, y-2), (x+2, y+2),
+                                          (x-1, y-2), (x-1, y+2), (x-2, y-1), (x-2, y+1),
+                                          (x+1, y-2), (x+1, y+2), (x+2, y-1), (x+2, y+1)]
                         corner_ones2 = [pos for pos in ones_positions if pos in second_corsers]
                         if corner_ones2:
                             x_corner, y_corner = random.choice(corner_ones2)
@@ -112,20 +113,20 @@ def ant_rec(N, m, filename, seed):
         score += grid[x][y]
         grid[x][y] -= 1
         moves += 1
-        line = ",".join(map(str, view.flatten())) + f",{move}\n"
-        with open(filename, "a") as f:
+        line += f",{move}\n"
+        with open(filename, "a", encoding="utf-8") as f:
             f.write(line)
     return score
 
 def create_games(N, m, seed):
     scores = ""
-    for i in range(10):
-        fn = f"./data/m{m}_game{i}.txt"
+    for u in range(10):
+        fn = f"./data/m{m}_game{u}.txt"
         print(fn)
         total_score = ant_rec(N, m, fn, seed)
         scores += f"{total_score},"
     fn = f"./data/scores_m{m}.txt"
-    with open(fn, "w") as f:
+    with open(fn, "w", encoding="utf-8") as f:
         f.write(scores)
 
 _N = 10
@@ -136,10 +137,10 @@ _m = 2
 create_games(_N, _m, _seed)
 # dataset1game = game1
 for j in range(1, 3):
-    with open(f"./data/dataset5games_m{j}.txt", "w") as f1, open(f"./data/dataset10games_m{j}.txt", "w") as f2:
+    with open(f"./data/dataset5games_m{j}.txt", "w", encoding="utf-8") as f1, open(f"./data/dataset10games_m{j}.txt", "w", encoding="utf-8") as f2:
         for i in range(10):
             file = f"./data/m{j}_game{i}.txt"
-            with open(file, "r") as f0:
+            with open(file, "r", encoding="utf-8") as f0:
                 text = f0.read()
                 if i < 5:
                     f1.write(text)
