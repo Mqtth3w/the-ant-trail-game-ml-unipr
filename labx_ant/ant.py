@@ -1,6 +1,10 @@
+'''
+@author Mqtth3w https://github.com/Mqtth3w
+@license GPL-3.0
+'''
 
-N = 10
-seed = 1
+_N = 10
+_seed = 1
 
 class Ant:
     def __init__(self, N, m, x, y):

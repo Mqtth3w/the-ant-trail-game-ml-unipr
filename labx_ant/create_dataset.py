@@ -1,32 +1,37 @@
+'''
+@author Mqtth3w https://github.com/Mqtth3w
+@license GPL-3.0
+'''
+
 import numpy as np
 import random
 
-def create_grid(N, seed):
+def create_grid(N, m, seed):
     np.random.seed(seed)
-    grid = np.zeros((N + 2, N + 2), dtype=int)
-    grid[0, :] = -N-2
-    grid[-1, :] = -N-2
-    grid[:, 0] = -N-2
-    grid[:, -1] = -N-2
+    grid = np.zeros((N + m*2, N + m*2), dtype=int)
+    grid[:m, :] = -N-2
+    grid[-m:, :] = -N-2
+    grid[:, :m] = -N-2
+    grid[:, -m:] = -N-2
     positions = np.random.choice(N * N, N, replace=False)
     row_idxs, col_idxs = np.unravel_index(positions, (N, N))
-    grid[row_idxs + 1, col_idxs + 1] = 1
+    grid[row_idxs + m, col_idxs + m] = 1
     return grid
 
 def ant_rec(N, m, filename, seed):
     #random.seed(seed)
-    grid = create_grid(N, seed)
-    x = (N + 2) // 2
-    y = (N + 2) // 2
+    grid = create_grid(N, m, seed)
+    x = (N + m*2) // 2
+    y = (N + m*2) // 2
     moves = 0
     score = 0
     move = ""
-    if grid[x][y] == 1:
-        score += 1
     grid[x][y] -= 1
+    if grid[x][y] == 0:
+        score += 1
     while moves < 2*N and score > -N-2 and score < N:
-        x_min, x_max = max(0, x - m), min(N, x + m + 1)
-        y_min, y_max = max(0, y - m), min(N, y + m + 1)
+        x_min, x_max = x - m, x + m + 1
+        y_min, y_max = y - m, y + m + 1
         view = grid[x_min:x_max, y_min:y_max]
         ones_positions = np.argwhere(view == 1)
         ones_positions = [(x_min + pos[0], y_min + pos[1]) for pos in ones_positions]
@@ -135,9 +140,9 @@ for j in range(1, 3):
         for i in range(10):
             file = f"./data/m{j}_game{i}.txt"
             with open(file, "r") as f0:
-                line = f0.read()
+                text = f0.read()
                 if i < 5:
-                    f1.write(line)
-                    f1.write("\n")
-                f2.write(line)
-                f2.write("\n")
+                    f1.write(text)
+                    #f1.write("\n")
+                f2.write(text)
+                #f2.write("\n")
