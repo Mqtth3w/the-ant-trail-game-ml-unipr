@@ -129,21 +129,22 @@ def create_games(N, m, seed):
     with open(fn, "w", encoding="utf-8") as f:
         f.write(scores)
 
-_N = 10
-_m = 1
-_seed = 0
-create_games(_N, _m, _seed)
-_m = 2
-create_games(_N, _m, _seed)
-# dataset1game = game1
-for j in range(1, 3):
-    with open(f"./data/dataset5games_m{j}.txt", "w", encoding="utf-8") as f1, open(f"./data/dataset10games_m{j}.txt", "w", encoding="utf-8") as f2:
-        for i in range(10):
-            file = f"./data/m{j}_game{i}.txt"
-            with open(file, "r", encoding="utf-8") as f0:
-                text = f0.read()
-                if i < 5:
-                    f1.write(text)
-                    #f1.write("\n")
-                f2.write(text)
-                #f2.write("\n")
+if __name__ == "__main__":
+    _N = 10
+    _m = 1
+    _seed = 0
+    create_games(_N, _m, _seed)
+    _m = 2
+    create_games(_N, _m, _seed)
+    # dataset1game = game1
+    for j in range(1, 3):
+        with open(f"./data/dataset5games_m{j}.txt", "w", encoding="utf-8") as f1, open(f"./data/dataset10games_m{j}.txt", "w", encoding="utf-8") as f2:
+            for i in range(10):
+                file = f"./data/m{j}_game{i}.txt"
+                with open(file, "r", encoding="utf-8") as f0:
+                    text = f0.read()
+                    if i < 5:
+                        f1.write(text)
+                        #f1.write("\n")
+                    f2.write(text)
+                    #f2.write("\n")
