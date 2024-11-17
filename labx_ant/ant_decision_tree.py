@@ -19,17 +19,18 @@ def ant_train(model, m, dataset):
     #print("X=", X)
     #print("y=", y)
     model.fit(X, y)
+    print("model trained.")
     
 def ant_play_game(model, grid, N, m):
     x = (N + 2) // 2
     y = (N + 2) // 2
-    moves = 0
+    moves = 1
     score = 0
     move = ""
     grid[x][y] -= 1
     if grid[x][y] == 0:
         score += 1
-    while x-m >= 0 and y-m >= 0 and x-m < N and y-m < N and moves < 2*N and score < N and score > -N-2:
+    while x-m >= 0 and y-m >= 0 and x-m < N and y-m < N and moves <= 2*N and score < N and score > -N-2:
         x_min, x_max = x - m, x + m + 1
         y_min, y_max = y - m, y + m + 1
         view = grid[x_min:x_max, y_min:y_max]
@@ -48,7 +49,7 @@ def ant_play_game(model, grid, N, m):
         score += grid[x][y]
         grid[x][y] -= 1
         moves += 1
-        print(f"score: {score}.")
+        print(f"score: {score}. moves: {moves}.")
         #input("press any key to proced or remove this line to automate the process.")
     return score
 
@@ -60,9 +61,9 @@ if __name__ == "__main__":
     ant_train(clf_mxm, _m, f"./data/m{_m}_game9.txt")
     for i in range(5):
         print(f"\n\nGame number {i} of 5.\n\n")
-        grid = create_grid(_N, _m, (_seed+i)**i)
-        score = ant_play_game(clf_mxm, grid, _N, _m)
-        with open(f"./decision_tree_games/m{_m}_game_scores.txt", "a", encoding="utf-8") as f:
-            f.write(f"{score}\n")
+        _grid = create_grid(_N, _m, (_seed+i)**i)
+        _score = ant_play_game(clf_mxm, _grid, _N, _m)
+        with open(f"./decision_tree_game_scores/m{_m}_game_scores.txt", "a", encoding="utf-8") as f:
+            f.write(f"{_score}\n")
     
     
