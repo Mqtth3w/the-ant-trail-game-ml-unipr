@@ -11,8 +11,8 @@ from create_dataset import create_grid
 label2id = {"up": 11, "down": 26, "left": 17, "right": 9}
 id2label = {11: "up", 26: "down", 17: "left", 9: "right"}
 
-def ant_train(model, m):
-    dataset = pd.read_csv(f"./data/m{m}_game2.txt", header=None)
+def ant_train(model, m, dataset):
+    dataset = pd.read_csv(dataset, header=None)
     X = dataset.iloc[:,:(2*m+1)**2].values
     y = dataset.iloc[:,(2*m+1)**2].values
     y = [label2id[label] for label in y]
@@ -21,15 +21,15 @@ def ant_train(model, m):
     model.fit(X, y)
     
 def ant_play_game(model, grid, N, m):
-    x = (N + m*2) // 2
-    y = (N + m*2) // 2
+    x = (N + 2) // 2
+    y = (N + 2) // 2
     moves = 0
     score = 0
     move = ""
     grid[x][y] -= 1
     if grid[x][y] == 0:
         score += 1
-    while moves < 2*N and score > -N-2 and score < N:
+    while x-m >= 0 and y-m >= 0 and x-m < N and y-m < N and moves < 2*N and score < N and score > -N-2:
         x_min, x_max = x - m, x + m + 1
         y_min, y_max = y - m, y + m + 1
         view = grid[x_min:x_max, y_min:y_max]
@@ -54,13 +54,13 @@ def ant_play_game(model, grid, N, m):
 
 if __name__ == "__main__":
     _N = 10
-    _seed = 0
-    _m = 1
+    _seed = 7
+    _m = 2
     clf_mxm = DecisionTreeClassifier(random_state=_seed)
-    ant_train(clf_mxm, _m)
+    ant_train(clf_mxm, _m, f"./data/m{_m}_game9.txt")
     for i in range(5):
         print(f"\n\nGame number {i} of 5.\n\n")
-        grid = create_grid(_N, _m, _seed+i)
+        grid = create_grid(_N, _m, (_seed+i)**i)
         score = ant_play_game(clf_mxm, grid, _N, _m)
         with open(f"./decision_tree_games/m{_m}_game_scores.txt", "a", encoding="utf-8") as f:
             f.write(f"{score}\n")

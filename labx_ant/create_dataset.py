@@ -19,17 +19,16 @@ def create_grid(N, m, seed):
     return grid
 
 def ant_rec(N, m, filename, seed):
-    #random.seed(seed)
     grid = create_grid(N, m, seed)
-    x = (N + m*2) // 2
-    y = (N + m*2) // 2
+    x = (N + 2) // 2
+    y = (N + 2) // 2
     moves = 0
     score = 0
     move = ""
     grid[x][y] -= 1
     if grid[x][y] == 0:
         score += 1
-    while moves < 2*N and score > -N-2 and score < N:
+    while x-m >= 0 and y-m >= 0 and x-m < N and y-m < N and moves < 2*N and score < N and score > -N-2:
         x_min, x_max = x - m, x + m + 1
         y_min, y_max = y - m, y + m + 1
         view = grid[x_min:x_max, y_min:y_max]
@@ -123,7 +122,7 @@ def create_games(N, m, seed):
     for u in range(10):
         fn = f"./data/m{m}_game{u}.txt"
         print(fn)
-        total_score = ant_rec(N, m, fn, seed)
+        total_score = ant_rec(N, m, fn, (seed+u)**u)
         scores += f"{total_score},"
     fn = f"./data/scores_m{m}.txt"
     with open(fn, "w", encoding="utf-8") as f:
